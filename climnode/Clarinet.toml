@@ -5,6 +5,11 @@ authors = []
 telemetry = true
 cache_dir = '.\.cache'
 requirements = []
+[contracts.Community-Engagement]
+path = 'contracts/Community-Engagement.clar'
+clarity_version = 3
+epoch = 3.0
+
 [contracts.proposal-submission]
 path = 'contracts/proposal-submission.clar'
 clarity_version = 2
