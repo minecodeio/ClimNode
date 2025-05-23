@@ -5,6 +5,10 @@ authors = []
 telemetry = true
 cache_dir = '.\.cache'
 requirements = []
+[contracts.Community-Engagement]
+path = 'contracts/Community-Engagement.clar'
+clarity_version = 3
+epoch = 3.0
 [contracts.impact-tracking]
 path = 'contracts/impact-tracking.clar'
 [contracts.funding-allocation]
