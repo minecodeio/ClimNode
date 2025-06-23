@@ -1,10 +1,7 @@
 ;; title: Community-Engagement
-;; version:
-;; summary:
-;; description:
-
-;; Community Engagement Contract
-;; This contract manages member proposals and project details to encourage participation and transparency
+;; version: 1.0.0
+;; summary: Community engagement contract for managing proposals and projects
+;; description: This contract manages member proposals and project details to encourage participation and transparency
 
 ;; Define data variables
 (define-data-var proposal-count uint u0)
@@ -109,6 +106,20 @@
   )
 )
 
+;; Update proposal status (only contract owner)
+(define-public (update-proposal-status (proposal-id uint) (new-status (string-ascii 20)))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (asserts! (or (is-eq new-status "pending") (is-eq new-status "approved") (is-eq new-status "rejected")) ERR-INVALID-STATUS)
+    (match (map-get? proposals { proposal-id: proposal-id })
+      proposal (ok (map-set proposals
+                    { proposal-id: proposal-id }
+                    (merge proposal { status: new-status })))
+      ERR-NOT-FOUND
+    )
+  )
+)
+
 ;; Define read-only functions
 
 ;; Get member proposals
@@ -132,25 +143,51 @@
   )
 )
 
-;; Helper function for get-all-projects
-(define-private (add-if-some (id uint) (acc (list 50 {
-    title: (string-utf8 100),
-    description: (string-utf8 500),
-    funding: uint,
-    impact: (string-utf8 200),
-    status: (string-ascii 20)
-  })))
-  (match (map-get? projects { project-id: id })
-    project (unwrap! (as-max-len? (append acc project) u50) acc)
-    acc
+;; Get total proposal count
+(define-read-only (get-proposal-count)
+  (ok (var-get proposal-count))
+)
+
+;; Get total project count
+(define-read-only (get-project-count)
+  (ok (var-get project-count))
+)
+
+;; Check if a project exists
+(define-read-only (project-exists (project-id uint))
+  (is-some (map-get? projects { project-id: project-id }))
+)
+
+;; Check if a proposal exists
+(define-read-only (proposal-exists (proposal-id uint))
+  (is-some (map-get? proposals { proposal-id: proposal-id }))
+)
+
+;; Get project status only
+(define-read-only (get-project-status (project-id uint))
+  (match (map-get? projects { project-id: project-id })
+    project (ok (get status project))
+    ERR-NOT-FOUND
   )
 )
 
-;; Helper function to convert number to uint
-(define-private (to-uint (n int))
-  (if (>= n 0)
-    (ok (to-uint n))
-    (err 0)
+;; Get proposal status only
+(define-read-only (get-proposal-status (proposal-id uint))
+  (match (map-get? proposals { proposal-id: proposal-id })
+    proposal (ok (get status proposal))
+    ERR-NOT-FOUND
   )
 )
 
+;; Get project funding amount
+(define-read-only (get-project-funding (project-id uint))
+  (match (map-get? projects { project-id: project-id })
+    project (ok (get funding project))
+    ERR-NOT-FOUND
+  )
+)
+
+;; Check if user is contract owner
+(define-read-only (is-contract-owner (user principal))
+  (is-eq user CONTRACT-OWNER)
+)
