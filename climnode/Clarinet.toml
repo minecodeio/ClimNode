@@ -9,8 +9,7 @@ requirements = []
 path = 'contracts/Community-Engagement.clar'
 clarity_version = 3
 epoch = 3.0
-[contracts.impact-tracking]
-path = 'contracts/impact-tracking.clar'
+
 [contracts.funding-allocation]
 path = 'contracts/funding-allocation.clar'
 clarity_version = 2
@@ -20,6 +19,16 @@ epoch = 2.5
 path = 'contracts/governance-token.clar'
 clarity_version = 2
 epoch = 2.5
+
+[contracts.impact-tracking]
+path = 'contracts/impact-tracking.clar'
+clarity_version = 1
+epoch = 2.05
+
+[contracts.pool-funding]
+path = 'contracts/pool-funding.clar'
+clarity_version = 3
+epoch = 3.0
 
 [contracts.proposal-submission]
 path = 'contracts/proposal-submission.clar'
